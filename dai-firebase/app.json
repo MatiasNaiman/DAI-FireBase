@@ -7,9 +7,9 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./src/img/FireBaseLogo.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#8D8C86"
     },
     "assetBundlePatterns": [
       "**/*"

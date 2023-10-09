@@ -1,46 +1,46 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import axios from 'axios';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { initializeApp } from 'firebase/app';
+import { firebaseConfig } from '../../firebase-config';
+import { useNavigation } from '@react-navigation/native';
 
 const LogInScreen = () => {
-  const [mail, setMail] = useState('');
+  const [email, setEmail] = useState('');
   const [contraseña, setContraseña] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const navigation = useNavigation();
+    const navigation = useNavigation();
+  //funciones inicio y login with firebase 
+    const app = initializeApp(firebaseConfig)
+    const auth = getAuth(app) 
 
-  const validarUsuario =async () =>{
-    try{
-      let objeto = {
-        email: mail,
-        password: contraseña,
-      }
-
-      console.log(Api.ApiLogin)
-      const response = await axios.post(Api.ApiLogin, objeto);
-      console.log(response)
-      const Headers={
-        headers:{
-          authorization: `Bearer ${response.data}`
-        }
-      }
-      console.log(Headers)
-      if (Headers.data!="") {
-        /* navigation.navigate('pantalla a ir', { mail, contraseña }) */
-      }
-      else{
-        console.log('los datos son erroneos, intente de nuevo')
-      }
+    const handleCreateAccount = () => {
+        createUserWithEmailAndPassword(auth, email, contraseña)
+        .then((userCredentials) => {
+            console.log("cuenta creada con exito")
+            const user = userCredentials.user;
+            console.log(user);
+        })
+        .catch (error => {
+            console.log(error);
+            alert(error.message)
+         })
     }
-    catch(error){
-      console.log(error)
-    }
-  }
 
-  const toggleShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
+    const handleSingIn = () => {
+        signInWithEmailAndPassword(auth, email, contraseña)
+        .then((userCredentials) => {
+            console.log("Singned In!!")
+            const user = userCredentials.user;
+            console.log(user);
+            navigation.navigate('Home')
+        })
+        .catch (error => {
+            console.log(error);
+            alert(error.message)
+         })
+    }
+
   return (
     <View style={styles.view}>
       <View style={styles.container}>
@@ -50,8 +50,8 @@ const LogInScreen = () => {
           <TextInput
             style={styles.input}
             placeholder="Mail:"
-            value={mail}
-            onChangeText={setMail}
+            value={email}
+            onChangeText={(text) => setEmail(text)}
           />
         </View>
 
@@ -60,17 +60,22 @@ const LogInScreen = () => {
             style={styles.input}
             placeholder="Contraseña:"
             value={contraseña}
-            onChangeText={setContraseña}
-            secureTextEntry={!showPassword}
+            onChangeText={(text) => setContraseña(text)}
+            
           />
-          <TouchableOpacity style={styles.showPasswordButton} onPress={toggleShowPassword}>
-            <Icon name={showPassword ? 'eye' : 'eye-slash'} size={20} color="#555" />
+          <TouchableOpacity style={styles.showPasswordButton}>
+            
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.buttonChico} onPress={validarUsuario} >
+        <TouchableOpacity onPress={handleCreateAccount} style={styles.buttonChico}  >
+          <Text  style={styles.buttonText}>Crear Cuenta</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={handleSingIn} style={styles.buttonChico}  >
           <Text style={styles.buttonText}>Iniciar sesión</Text>
         </TouchableOpacity>
+
       </View>
     </View>
   );

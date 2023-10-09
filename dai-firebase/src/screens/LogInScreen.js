@@ -5,6 +5,7 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } f
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from '../../firebase-config';
 import { useNavigation } from '@react-navigation/native';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 
 const LogInScreen = () => {
   const [email, setEmail] = useState('');
@@ -40,6 +41,18 @@ const LogInScreen = () => {
             alert(error.message)
          })
     }
+    const handleGoogleSignIn = async () => {
+        try {
+          const provider = new GoogleAuthProvider();
+          const result = await signInWithPopup(auth, provider);
+          const user = result.user;
+          console.log('Google Sign-In Successful:', user);
+          navigation.navigate('Home')
+          // Navigate to the next screen or perform any necessary actions.
+        } catch (error) {
+          console.error('Google Sign-In Error:', error);
+        }
+      };
 
   return (
     <View style={styles.view}>
@@ -75,6 +88,10 @@ const LogInScreen = () => {
         <TouchableOpacity onPress={handleSingIn} style={styles.buttonChico}  >
           <Text style={styles.buttonText}>Iniciar sesión</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity onPress={handleGoogleSignIn} style={styles.buttonChico}>
+        <Text style={styles.buttonText}>Sign In with Google</Text>
+      </TouchableOpacity>
 
       </View>
     </View>

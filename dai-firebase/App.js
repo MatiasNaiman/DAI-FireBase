@@ -22,7 +22,7 @@ export default function App() {
   const [user, setUser] = useState(null);
 
 
-  {/*LOGICA DE AUTO LOGIN PADREEE */}
+  {/*LOGICA DE AUTO LOGIN PADREEE (no funciona)*/}
   useEffect(() => {
     onAuthStateChanged(FIREBASE_AUTH, async (authUser) => {
       if (authUser) {

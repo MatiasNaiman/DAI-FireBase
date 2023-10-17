@@ -21,8 +21,12 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
 
+  let reloadUser = () => {
+    setUser(null)
+  }
 
-  {/*LOGICA DE AUTO LOGIN PADREEE (no funciona)*/}
+
+  {/*LOGICA DE AUTO LOGIN PADREEE */}
   useEffect(() => {
     onAuthStateChanged(FIREBASE_AUTH, async (authUser) => {
       if (authUser) {
@@ -48,7 +52,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         {user ? (
-          <Stack.Screen name="Home" component={HomeScreen} initialParams={{ userData: user }} />
+          <Stack.Screen name="Home" component={HomeScreen} initialParams={{ userData: user, reloadUser: reloadUser }} />
         ) : (
           <>
             <Stack.Screen name="Login" component={LoginScreen} />
